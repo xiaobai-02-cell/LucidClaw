@@ -646,23 +646,9 @@ MIT License
 
 ---
 
-## 📬 联系方式
-
-- **GitHub**: [@ttguy0707](https://github.com/ttguy0707)
-- **邮箱**: thor07@126.com
-
----
-
-## ⭐ Star History
-
-[![Star History Chart](https://api.star-history.com/svg?repos=ttguy0707/LucidClaw&type=Date)](https://star-history.com/#ttguy0707/LucidClaw&Date)
-
----
-
 <div align="center">
 
 **👾 LucidClaw · 下一代透明智能体架构**
 
-Made with ❤️ by [@ttguy0707](https://github.com/ttguy0707)
 
 </div>
