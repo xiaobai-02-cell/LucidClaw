@@ -629,11 +629,6 @@ pip install -e ".[dev]"
 
 ---
 
-## 📄 许可证
-
-MIT License
-
----
 
 ## 🙏 致谢
 
