@@ -12,7 +12,7 @@
 [![LangChain](https://img.shields.io/badge/LangChain-1.x-blue.svg)](https://python.langchain.com/)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 [![Tests](https://img.shields.io/badge/Tests-Passing-brightgreen.svg)](tests/)
-[![GitHub](https://img.shields.io/badge/GitHub-@ttguy0707-black.svg?logo=github)](https://github.com/ttguy0707)
+
 
 **下一代透明智能体架构** · Next-Gen Transparent Agent Architecture
 
@@ -33,7 +33,7 @@
 LucidClaw 是一个**企业级透明可控智能体**，重新定义 AI 系统的可信边界：
 
 - **🔍 白盒化决策** → 5 类事件审计 + JSONL 日志 + Rich 监控终端，所有行为可追溯
-- **🛡️ 零信任执行** → 两段式调用（help → run），先看说明书再执行，P0 级事故率降低 80%
+- **🛡️ 零信任执行** → 两段式调用（help → run），先看说明书再执行，P0 级事故率降低 92.3%
 - **🧠 持续学习** → 双水位记忆系统（长期画像 + 短期摘要），越用越懂你
 - **⚡ 复杂任务编排** → 心跳任务系统 + 可插拔技能 + MCP 服务集成，解放双手
 
