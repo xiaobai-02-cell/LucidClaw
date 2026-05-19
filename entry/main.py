@@ -16,6 +16,7 @@ from lucidclaw.core.agent import create_agent_app
 from lucidclaw.core.config import DB_PATH
 from lucidclaw.core.bus import task_queue
 from lucidclaw.core.heartbeat import pacemaker_loop
+from lucidclaw.channels.feishu import feishu_worker
 
 def clear_screen():
     os.system('cls' if os.name == 'nt' else 'clear')
@@ -152,48 +153,57 @@ async def async_main():
                 if user_input.lower() in ["/exit", "/quit"]:
                     task_queue.task_done()
                     break
-                
+
+                is_from_feishu = user_input.startswith("[飞书]")
+
                 spinner.current_words = spinner.action_words.copy()
                 random.shuffle(spinner.current_words)
-                
+
                 spinner.start_time = time.time()
                 spinner.is_spinning = True
                 spinner.is_tool_calling = False
-                
+
                 inputs = {"messages": [HumanMessage(content=user_input)]}
+                final_reply = ""
                 try:
                     async for event in app.astream(inputs, config=config, stream_mode="updates"):
                         for node_name, node_data in event.items():
                             if node_name == "agent":
                                 last_msg = node_data["messages"][-1]
-                                
+
                                 if hasattr(last_msg, "tool_calls") and last_msg.tool_calls:
                                     for tc in last_msg.tool_calls:
                                         spinner.is_tool_calling = True
                                         spinner.tool_msg = f"唤醒内置工具 : {tc['name']}..."
                                         cprint(f"  ●\033[38;5;51m Tool Call: \033[0m{tc['name']}")
                                         cprint('')
-                                        
+
                                 elif last_msg.content:
                                     spinner.is_spinning = False
-                                    
+                                    final_reply = last_msg.content
+
                                     lines = last_msg.content.strip().split('\n')
                                     if lines:
                                         formatted_out = f"  \033[38;5;141m❯\033[0m \033[38;5;250m{lines[0]}"
                                         for line in lines[1:]:
                                             formatted_out += f"\n    {line}"
-                                        formatted_out += "\033[0m" 
+                                        formatted_out += "\033[0m"
                                         cprint(formatted_out)
-                                    
-                            elif node_name != "agent": 
-                                spinner.is_tool_calling = False 
-                                
+
+                            elif node_name != "agent":
+                                spinner.is_tool_calling = False
+
                 except Exception as e:
                     spinner.is_spinning = False
                     cprint(f"  \033[31m[ ⚠️ 引擎异常 : {e} ]\033[0m")
 
                 spinner.is_spinning = False
-                cprint() # 空出舒适的行距
+
+                if is_from_feishu and final_reply:
+                    from lucidclaw.channels.feishu import send_to_feishu
+                    send_to_feishu(final_reply)
+
+                cprint()
                 task_queue.task_done()
 
         async def user_input_loop():
@@ -246,10 +256,12 @@ async def async_main():
         with patch_stdout():
             worker = asyncio.create_task(agent_worker())
             heartbeat_worker = asyncio.create_task(pacemaker_loop(check_interval=10))
+            feishu_task = asyncio.create_task(feishu_worker())
             await user_input_loop()
             await task_queue.join()
             worker.cancel()
             heartbeat_worker.cancel()
+            feishu_task.cancel()
 
 def main():
     asyncio.run(async_main())

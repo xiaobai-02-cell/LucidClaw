@@ -273,6 +273,21 @@ def modify_scheduled_task(task_id: str, new_time: str = None, new_description: s
             return f"操作异常：{str(e)}"
 
 
+@lucidclaw_tool
+def send_feishu_message(text: str) -> str:
+    """
+    向飞书群发送一条消息。
+    当你需要主动推送信息到飞书群时调用此工具。
+    text 参数是要发送的消息内容。
+    注意：此工具依赖飞书 API，请确保 FEISHU_APP_ID 和 FEISHU_APP_SECRET 已配置。
+    """
+    from lucidclaw.channels.feishu import send_to_feishu
+    ok = send_to_feishu(text)
+    if ok:
+        return "消息已成功发送到飞书群。"
+    return "发送失败：请检查飞书配置或消息 ID 是否有效（需要先收到一条飞书消息）。"
+
+
 BUILTIN_TOOLS = [
     get_current_time,
     calculator,
@@ -285,5 +300,6 @@ BUILTIN_TOOLS = [
     schedule_task,
     list_scheduled_tasks,
     delete_scheduled_task,
-    modify_scheduled_task
+    modify_scheduled_task,
+    send_feishu_message,
 ]
