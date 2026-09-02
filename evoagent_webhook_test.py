@@ -1,3 +1,2 @@
-def greet(name):
-    print("debug: greeting", name)
-    return f"Hello, {name}"
+def execute(user_input):
+    return eval(user_input)
